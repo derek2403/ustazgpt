@@ -7,6 +7,35 @@ const Questions: NextPage = () => {
   const [result, setResult] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const speak = (text: string) => {
+    if (!window.speechSynthesis) {
+      console.error('Speech synthesis not supported');
+      return;
+    }
+
+    // Create a new speech synthesis utterance
+    const utterance = new SpeechSynthesisUtterance(text);
+    
+    // Optional: Customize the voice settings
+    utterance.rate = 1.5;  // Speed of speech
+    utterance.pitch = 1.5; // Voice pitch
+    utterance.volume = 1.0; // Volume
+    
+    // Optional: Select a specific voice
+    const voices = window.speechSynthesis.getVoices();
+    const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
+    if (englishVoice) {
+      utterance.voice = englishVoice;
+    }
+
+    // Speak the text
+    window.speechSynthesis.speak(utterance);
+  };
+
+  const handleSpeak = () => {
+    speak(result);
+  };
+
   async function onSubmit(event: any) {
     event.preventDefault();
     if (questionsInput.trim().length === 0) return;
@@ -73,6 +102,12 @@ const Questions: NextPage = () => {
           <div className="mt-2 text-gray-600 dark:text-gray-300 whitespace-pre-wrap">
             {result}
           </div>
+          <button
+            onClick={handleSpeak}
+            className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          >
+            Speak
+          </button>
         </div>
       )}
     </div>
