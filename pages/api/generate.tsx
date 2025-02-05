@@ -35,13 +35,22 @@ export default async function (req: any, res: any) {
   }
 
   try {
-    const completion = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: generatePrompt(questions),
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "system",
+          content: `${Security_Prompt}. ${Prompt}`
+        },
+        {
+          role: "user",
+          content: questions
+        }
+      ],
       temperature: 0.3,
       max_tokens: 2048
     });
-    res.status(200).json({ result: completion.data.choices[0].text });
+    res.status(200).json({ result: completion.data.choices[0].message.content });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
