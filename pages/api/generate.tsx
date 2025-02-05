@@ -1,11 +1,9 @@
-import { Configuration, OpenAIApi } from "openai";
+import OpenAI from "openai";
 import { Prompt, Security_Prompt } from "../../components/constant";
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-const openai = new OpenAIApi(configuration);
 
 export default async function (req: any, res: any) {
   const { context } = req.netlifyFunctionParams || {};
@@ -14,7 +12,7 @@ export default async function (req: any, res: any) {
     context.callbackWaitsForEmptyEventLoop = false;
   }
 
-  if (!configuration.apiKey) {
+  if (!openai.apiKey) {
     res.status(500).json({
       error: {
         message: "OpenAI API key not configured, please follow instructions.",
@@ -35,7 +33,7 @@ export default async function (req: any, res: any) {
   }
 
   try {
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
@@ -50,7 +48,7 @@ export default async function (req: any, res: any) {
       temperature: 0.3,
       max_tokens: 2048
     });
-    res.status(200).json({ result: completion.data.choices[0].message?.content ?? '' });
+    res.status(200).json({ result: completion.choices[0].message?.content ?? '' });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
