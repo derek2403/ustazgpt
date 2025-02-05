@@ -50,7 +50,7 @@ export default async function (req: any, res: any) {
       temperature: 0.3,
       max_tokens: 2048
     });
-    res.status(200).json({ result: completion.data.choices[0].message.content });
+    res.status(200).json({ result: completion.data.choices[0].message?.content ?? '' });
   } catch (error: any) {
     // Consider adjusting the error handling logic for your use case
     if (error.response) {
