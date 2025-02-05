@@ -21,11 +21,22 @@ const Questions: NextPage = () => {
     utterance.pitch = 1.5; // Voice pitch
     utterance.volume = 1.0; // Volume
     
-    // Optional: Select a specific voice
+    // Get all available voices
     const voices = window.speechSynthesis.getVoices();
-    const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
-    if (englishVoice) {
-      utterance.voice = englishVoice;
+    
+    // Find Microsoft David voice specifically
+    const davidVoice = voices.find(voice => 
+      voice.name === 'Microsoft David - English (United States)' && 
+      voice.lang === 'en-US'
+    );
+    
+    if (davidVoice) {
+      utterance.voice = davidVoice;
+    } else {
+      const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
+      if (englishVoice) {
+        utterance.voice = englishVoice;
+      }
     }
 
     // Speak the text
